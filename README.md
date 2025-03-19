@@ -1,3 +1,4 @@
+```ini
 APP_NAME=ticket
 APP_ENV=local
 APP_KEY=
