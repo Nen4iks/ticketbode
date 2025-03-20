@@ -2,22 +2,25 @@
     <Head>
         <title>Welcome to Ticketbode</title>
     </Head>
-    <Navbar :user="$page.props.auth.user" :canLogin="canLogin" :canRegister="canRegister" />
-    <!-- Header Section -->
+
+    <!-- Навигация -->
+    <Navbar :user="user" :canLogin="canLogin" :canRegister="canRegister" />
+
+    <!-- Главный экран -->
     <section class="hero" :class="{ 'animate': isVisible }">
         <div class="hero-content">
             <h2>Your Gateway to Live Entertainment</h2>
-            <p>
-                Discover and book tickets for the hottest concerts, theater shows, sports events, and more.
-            </p>
+            <p>Discover and book tickets for the hottest concerts, theater shows, sports events, and more.</p>
             <div class="search-container">
                 <input type="text" v-model="searchQuery" placeholder="Search for events..." class="search-input">
                 <button @click="searchEvents" class="search-button">Search</button>
             </div>
         </div>
     </section>
+
+    <!-- Категории -->
     <section class="categories">
-        <h3>Browse by Category</h3>
+        <h3 class="section-heading">Browse by Category</h3>
         <div class="category-grid">
             <div v-for="category in categories" :key="category.id" class="category-card" @click="filterByCategory(category.id)">
                 <font-awesome-icon :icon="category.icon" />
@@ -25,8 +28,10 @@
             </div>
         </div>
     </section>
+
+    <!-- Избранные события -->
     <section class="featured">
-        <h3>Featured Events</h3>
+        <h3 class="section-heading">Featured Events</h3>
         <div class="event-slider">
             <div v-for="event in featuredEvents" :key="event.id" class="event-card">
                 <img :src="event.image" :alt="event.name">
@@ -38,9 +43,11 @@
             </div>
         </div>
     </section>
+
+    <!-- О нас -->
     <section class="about-us">
         <div class="about-us-content">
-            <h2>Why Choose Ticketbode</h2>
+            <h2 class="section-heading">Why Choose Ticketbode</h2>
             <div class="features-grid">
                 <div v-for="feature in features" :key="feature.id" class="feature-card">
                     <font-awesome-icon :icon="feature.icon" />
@@ -53,35 +60,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { ref, onMounted, computed } from 'vue';
+import { Head, usePage } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { 
-    faMusic, 
-    faBasketballBall, 
-    faTheaterMasks, 
-    faLaugh,
-    faShieldAlt,
-    faBolt,
-    faTag,
-    faHeadset 
-} from '@fortawesome/free-solid-svg-icons';
+import { faMusic, faBasketballBall, faTheaterMasks, faLaugh, faShieldAlt, faBolt, faTag, faHeadset } from '@fortawesome/free-solid-svg-icons';
 
-library.add(
-    faMusic, 
-    faBasketballBall, 
-    faTheaterMasks, 
-    faLaugh,
-    faShieldAlt,
-    faBolt,
-    faTag,
-    faHeadset
-);
+// Добавляем иконки в библиотеку
+library.add(faMusic, faBasketballBall, faTheaterMasks, faLaugh, faShieldAlt, faBolt, faTag, faHeadset);
 
 const searchQuery = ref('');
 const isVisible = ref(false);
+
+// Данные из Inertia.js (заменяет $page.props)
+const page = usePage();
+const user = computed(() => page.props.auth?.user || null);
+const canLogin = computed(() => page.props.canLogin ?? true);
+const canRegister = computed(() => page.props.canRegister ?? true);
 
 const categories = ref([
     { id: 1, name: 'Concerts', icon: ['fas', 'music'] },
@@ -103,20 +99,11 @@ const features = ref([
     { id: 4, title: '24/7 Support', icon: ['fas', 'headset'], description: 'Always here to help you' }
 ]);
 
-defineProps({
-    canLogin: Boolean,
-    canRegister: Boolean,
-    laravelVersion: String,
-    phpVersion: String,
-});
-
 const searchEvents = () => {
-    // Implement search functionality
     console.log('Searching for:', searchQuery.value);
 };
 
 const filterByCategory = (categoryId) => {
-    // Implement category filtering
     console.log('Filtering by category:', categoryId);
 };
 
@@ -135,12 +122,16 @@ onMounted(() => {
 }
 
 .hero {
-    padding: 8rem 2rem 4rem;
-    background: linear-gradient(135deg, #f6f7ff 0%, #e9eeff 100%);
+    padding: 8rem 2rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.6), rgba(0, 204, 255, 0.6)), url('/images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
     text-align: center;
+    color: white;
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.6s ease-out;
+    border-radius: 10px;
 }
 
 .hero.animate {
@@ -154,67 +145,127 @@ onMounted(() => {
 }
 
 .hero h2 {
-    font-size: 2.5rem;
-    color: #1a1a1a;
-    margin-bottom: 1.5rem;
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-.categories {
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.4);
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.search-input {
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    border: none;
+    font-size: 1rem;
+    width: 300px;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #333; /* Цвет текста */
+}
+
+.search-input:focus {
+    outline: none;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.search-button {
+    padding: 1rem 2rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-button:hover {
+    background-color: #1d4ed8;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .hero h2 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .search-container {
+        flex-direction: column;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+}
+
+.categories, .featured, .about-us {
     padding: 4rem 2rem;
-    background-color: #ffffff;
+    background-color: #f9fafb;
 }
 
-.category-grid {
+.category-grid, .event-slider, .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     max-width: 1200px;
     margin: 2rem auto 0;
 }
 
-.category-card {
+.category-card, .event-card, .feature-card {
     background: white;
     padding: 2rem;
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.category-card:hover {
+.category-card:hover, .event-card:hover, .feature-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
-.featured {
-    padding: 4rem 2rem;
-    background-color: #f8fafc;
+.category-card {
+    background: #f5f7fa;
+    border: 2px solid #e0e0e0;
+    color: #333;
 }
 
-.event-slider {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 2rem auto 0;
-}
-
-.event-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.event-card:hover {
-    transform: translateY(-5px);
+.category-card h4 {
+    font-weight: 600;
+    color: #2563eb;
+    margin-top: 1rem;
 }
 
 .event-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
+    border-radius: 8px;
 }
 
 .event-info {
@@ -226,91 +277,64 @@ onMounted(() => {
     color: #1a1a1a;
 }
 
+.event-info p {
+    color: #777;
+    font-size: 0.95rem;
+}
+
 .event-info .price {
     color: #2563eb;
     font-weight: 600;
-}
-
-.about-us {
-    padding: 4rem 2rem;
-    background-color: #ffffff;
 }
 
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
-    max-width: 1200px;
-    margin: 2rem auto 0;
 }
 
 .feature-card {
-    text-align: center;
-    padding: 2rem;
-    border-radius: 12px;
-    background: #f8fafc;
-    transition: transform 0.3s ease;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
-h3 {
-    text-align: center;
+.feature-card h4 {
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.feature-card p {
+    color: #555;
+}
+
+.about-us h2 {
     font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
     color: #1a1a1a;
+}
+
+/* Добавлены стили для заголовков категорий и избранных событий */
+.section-heading {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    text-align: center;
     margin-bottom: 2rem;
 }
 
-.search-container {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.search-input {
-    padding: 1rem 1.5rem;
-    border-radius: 50px;
-    border: 2px solid #e5e7eb;
-    width: 100%;
-    max-width: 400px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: #2563eb;
-}
-
-.search-button {
-    padding: 1rem 2rem;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.search-button:hover {
-    background-color: #1d4ed8;
-}
-
 @media (max-width: 768px) {
-    .hero-content {
-        padding: 0 1rem;
-    }
-    
-    .search-container {
-        flex-direction: column;
-    }
-    
-    .category-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    .categories, .featured, .about-us {
+        padding: 2rem 1rem;
     }
 }
 </style>
