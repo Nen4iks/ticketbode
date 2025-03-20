@@ -123,7 +123,7 @@ onMounted(() => {
 
 .hero {
     padding: 8rem 2rem;
-    background: linear-gradient(135deg, rgba(0, 102, 255, 0.6), rgba(0, 204, 255, 0.6)), url('/images/hero-bg.jpg');
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.6), rgba(0, 204, 255, 0.6));
     background-size: cover;
     background-position: center;
     text-align: center;

@@ -28,6 +28,11 @@ const showingNavigationDropdown = ref(false);
             <!-- Навигация для зарегистрированных пользователей -->
             <nav v-if="user" class="hidden sm:flex space-x-8">
                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="text-gray-800 hover:text-indigo-600 transition">Dashboard</NavLink>
+
+                <!-- Кнопка для админов -->
+                <NavLink v-if="user.is_admin" :href="route('admin.dashboard')" :active="route().current('admin.dashboard')" class="text-gray-800 hover:text-indigo-600 transition">
+                    Admin Panel
+                </NavLink>
             </nav>
 
             <!-- Навигация для гостей -->
@@ -79,6 +84,8 @@ const showingNavigationDropdown = ref(false);
             <div v-if="user" class="pt-2 pb-3 space-y-1">
                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="block px-4 py-2 text-gray-800 hover:bg-indigo-100 transition">Dashboard</NavLink>
                 <NavLink :href="route('profile.edit')" :active="route().current('profile.edit')" class="block px-4 py-2 text-gray-800 hover:bg-indigo-100 transition">Profile</NavLink>
+                <!-- Кнопка для админов в мобильной версии -->
+                <NavLink v-if="user.is_admin" :href="route('admin.dashboard')" :active="route().current('admin.dashboard')" class="block px-4 py-2 text-gray-800 hover:bg-indigo-100 transition">Admin Panel</NavLink>
                 <NavLink :href="route('logout')" method="post" as="button" class="block px-4 py-2 text-gray-800 hover:bg-indigo-100 transition">Log Out</NavLink>
             </div>
 

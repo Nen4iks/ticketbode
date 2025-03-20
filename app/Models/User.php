@@ -20,7 +20,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin', // Добавляем поле is_admin
     ];
+    
+    /**
+     * Проверка, является ли пользователь администратором.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->is_admin == 1;
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -33,15 +42,13 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_admin' => 'boolean', // Преобразуем is_admin в boolean
+    ];
 }
