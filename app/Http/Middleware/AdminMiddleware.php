@@ -8,15 +8,23 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
     public function handle(Request $request, Closure $next)
     {
         // Проверяем, является ли пользователь администратором
-        if (Auth::user() && Auth::user()->isAdmin()) {
+        if (Auth::check() && Auth::user()->is_admin) {
             return $next($request);
         }
 
-        // Если не админ, перенаправляем на главную страницу
-        return redirect('/');
+        // Если нет, перенаправляем на страницу с ошибкой или на главную
+        return redirect('/')->with('error', 'You do not have admin access.');
     }
 }
+
 
