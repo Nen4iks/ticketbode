@@ -28,17 +28,29 @@ class EventController extends Controller
 
     // Обновить событие
     public function update(Request $request, Event $event)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'date' => 'required|date',
-            'price' => 'required|numeric',
-            'image' => 'required|string'
-        ]);
+{
+    // Add detailed logging or debugging
+    \Log::info('Update Request Data:', $request->all());
 
-        $event->update($request->all());
-        return $event;
-    }
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'date' => 'required|date',
+        'price' => 'required|numeric',
+        'image' => 'required|string'
+    ]);
+
+    \Log::info('Validated Data:', $validatedData);
+
+    $updateResult = $event->update($validatedData);
+    
+    \Log::info('Update Result:', ['result' => $updateResult, 'event' => $event]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Event updated successfully',
+        'event' => $event
+    ]);
+}
 
     // Удалить событие
     public function destroy(Event $event)
@@ -47,4 +59,3 @@ class EventController extends Controller
         return response()->json(['message' => 'Event deleted']);
     }
 }
-

@@ -17,23 +17,35 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-const props = defineProps(['editingEvent']);
+const props = defineProps({
+  editingEvent: {
+    type: Object,
+    default: () => null
+  }
+});
 const emit = defineEmits(['save', 'cancel']);
 
+// Инициализация данных для редактирования
 const eventData = ref({
-    title: '',
-    date: '',
-    price: '',
-    image: '',
+  title: '',
+  date: '', // Ensure this is in YYYY-MM-DD format
+  price: '',
+  image: '',
 });
 
+// Синхронизация с редактируемым событием
 watch(() => props.editingEvent, (newEvent) => {
-    if (newEvent) {
-        eventData.value = { ...newEvent };
-    }
+  if (newEvent) {
+    // Extract just the date part (YYYY-MM-DD)
+    eventData.value = { 
+      ...newEvent,
+      date: newEvent.date ? newEvent.date.split('T')[0] : ''
+    };
+  }
 }, { immediate: true });
 
+// Сохранение данных
 const saveEvent = () => {
-    emit('save', eventData.value);
+  emit('save', eventData.value);
 };
 </script>

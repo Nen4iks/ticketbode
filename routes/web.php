@@ -33,11 +33,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('admin.dashboard');
 });
 
+// Доступ для всех (GET-запрос)
+Route::get('/events', [EventController::class, 'index']);
+
+// Доступ только для авторизованных пользователей
 Route::middleware('auth')->group(function () {
-    Route::get('/events', [EventController::class, 'index']);
     Route::post('/events', [EventController::class, 'store']);
     Route::put('/events/{event}', [EventController::class, 'update']);
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
 });
-
 require __DIR__.'/auth.php';
