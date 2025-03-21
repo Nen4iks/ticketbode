@@ -66,10 +66,18 @@ const cancelEdit = () => {
 };
 
 // Обновление события
-const updateEvent = (eventData) => {
-  console.log('Обновленные данные:', eventData);
-  // Здесь вы можете обновить событие на сервере или в вашем хранилище
-  editingEvent.value = null; // Закрыть форму после сохранения
+const updateEvent = async (eventData) => {
+    try {
+        await router.put(`/events/${eventData.id}`, eventData, {
+            preserveScroll: true, // Оставить скролл на месте
+            onSuccess: () => {
+                fetchEvents(); // Загружаем обновленные события
+                editingEvent.value = null; // Закрываем форму
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка обновления:', error);
+    }
 };
 // Обработка создания нового события
 const handleEventCreated = async (event) => {

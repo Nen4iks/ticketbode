@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="saveEvent">
         <label>Название события:</label>
-        <input v-model="eventData.title" type="text" />
+        <input v-model="eventData.name" type="text" />
 
         <label>Дата:</label>
         <input v-model="eventData.date" type="date" />
@@ -27,7 +27,7 @@ const emit = defineEmits(['save', 'cancel']);
 
 // Инициализация данных для редактирования
 const eventData = ref({
-  title: '',
+  name: '',
   date: '', // Ensure this is in YYYY-MM-DD format
   price: '',
   image: '',

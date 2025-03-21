@@ -34,11 +34,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 // Доступ для всех (GET-запрос)
-Route::get('/events', [EventController::class, 'index']);
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
 
 // Доступ только для авторизованных пользователей
 Route::middleware('auth')->group(function () {
     Route::post('/events', [EventController::class, 'store']);
+    Route::get('/events/{event}', [EventController::class, 'show']);
     Route::put('/events/{event}', [EventController::class, 'update']);
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
 });
