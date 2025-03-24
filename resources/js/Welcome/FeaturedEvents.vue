@@ -3,7 +3,8 @@
         <h2>Рекомендуемые события</h2>
         <div class="events-grid">
             <div v-for="event in events" :key="event.id" class="event-card">
-                <img :src="event.image || 'https://via.placeholder.com/150'" :alt="event.name" />
+                <!-- Формируем путь к изображению -->
+                <img :src="getImagePath(event.image)" :alt="event.name" />
                 <h3>{{ event.name }}</h3>
                 <p><strong>Дата:</strong> {{ event.date }}</p>
                 <p><strong>Цена:</strong> {{ event.price }}</p>
@@ -19,6 +20,12 @@ defineProps({
     isAdmin: Boolean
 });
 defineEmits(['edit']);
+
+// Метод для получения корректного пути к изображению
+const getImagePath = (image) => {
+    // Если путь указан, добавляем префикс /storage/, иначе возвращаем заглушку
+    return image ? `/storage/${image}` : 'https://via.placeholder.com/150';
+};
 </script>
 
 <style scoped>

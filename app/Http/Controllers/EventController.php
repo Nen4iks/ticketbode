@@ -22,41 +22,42 @@ class EventController extends Controller
             'name' => 'required|string|max:255',
             'date' => 'required|date',
             'price' => 'required|numeric',
-            'image' => 'required|string'
+            'image' => 'required|file|mimes:jpg,jpeg,png|max:2048',
         ]);
-
-        return Event::create($request->all());
-    }
-
-    // Получить одно событие по ID
-    public function show(Event $event)
-    {
-        return $event;
+    
+        // Сохраняем файл
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('events', 'public');
+        }
+    
+        Event::create([
+            'name' => $request->name,
+            'date' => $request->date,
+            'price' => $request->price,
+            'image' => $imagePath, // Сохраняем путь к файлу
+        ]);
+    
+        return redirect()->back()->with('message', 'Событие создано успешно!');
     }
 
     // Обновить событие
     public function update(Request $request, Event $event)
     {
-        // Add detailed logging or debugging
-        \Log::info('Update Request Data:', $request->all());
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'date' => 'required|date',
             'price' => 'required|numeric',
-            'image' => 'required|string'
+            'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
-
-        \Log::info('Validated Data:', $validatedData);
-
-        $updateResult = $event->update($validatedData);
-        
-        \Log::info('Update Result:', ['result' => $updateResult, 'event' => $event]);
-
-        return redirect()->back()->with([
-            'success' => true,
-            'message' => 'Event updated successfully'
-        ]);
+    
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('events', 'public');
+            $validatedData['image'] = $imagePath;
+        }
+    
+        $event->update($validatedData);
+    
+        return redirect()->back()->with('message', 'Событие обновлено успешно!');
     }
 
     // Удалить событие
